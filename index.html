@@ -169,9 +169,21 @@
       repeating-linear-gradient(115deg, rgba(255,255,255,.02) 0 2px, transparent 2px 34px);
     opacity:.5;
   }
-  .hero.hero-banner{ padding:0; }
+  .hero.hero-banner{
+    padding:0;
+    border-radius:0;
+    border-left:none; border-right:none;
+    width:calc(100% + 56px);
+    margin-left:-28px; margin-right:-28px;
+  }
   .hero.hero-banner::before{ display:none; }
-  .hero-slideshow{ position:relative; width:100%; aspect-ratio:1958/803; overflow:hidden; }
+  .hero-slideshow{
+    position:relative; width:100%;
+    aspect-ratio:1958/803;
+    overflow:hidden;
+    touch-action:pan-y;
+    user-select:none;
+  }
   .hero-banner-img{ display:block; width:100%; height:auto; }
   .hero-slideshow .hero-slide{
     position:absolute; inset:0;
@@ -179,10 +191,49 @@
     object-fit:cover;
     opacity:0;
     transition:opacity 1.2s ease-in-out;
+    pointer-events:none;
   }
   .hero-slideshow .hero-slide.active{ opacity:1; }
-  @media (max-width:700px){
+
+  .hero-slide-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    z-index:5;
+    width:38px; height:38px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%;
+    background:rgba(10,10,11,.45);
+    border:1px solid rgba(236,231,218,.35);
+    color:var(--bone);
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease, opacity .15s ease;
+    backdrop-filter:blur(2px);
+  }
+  .hero-slide-arrow:hover{ background:rgba(10,10,11,.7); border-color:var(--gold-hi); }
+  .hero-slide-arrow svg{ width:18px; height:18px; }
+  .hero-slide-arrow.prev{ left:14px; }
+  .hero-slide-arrow.next{ right:14px; }
+
+  .hero-slide-dots{
+    position:absolute; left:0; right:0; bottom:14px; z-index:5;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .hero-slide-dot{
+    width:8px; height:8px; border-radius:50%;
+    background:rgba(236,231,218,.4);
+    border:1px solid rgba(0,0,0,.25);
+    cursor:pointer;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .hero-slide-dot.active{ background:var(--gold-hi); transform:scale(1.2); }
+
+  @media (max-width:760px){
+    .hero.hero-banner{
+      width:calc(100% + 28px);
+      margin-left:-14px; margin-right:-14px;
+    }
     .hero-slideshow{ aspect-ratio:1958/1100; }
+    .hero-slide-arrow{ width:32px; height:32px; }
+    .hero-slide-arrow svg{ width:15px; height:15px; }
   }
   .hero-status-line{
     padding:10px 18px; border-top:1px solid var(--line-soft);
@@ -525,6 +576,14 @@
          <div class="hero-slideshow" id="heroSlideshow">
            <img class="hero-banner-img hero-slide active" src="banner.png" />
            <img class="hero-banner-img hero-slide" src="ambasagay-banner.png" />
+           <img class="hero-banner-img hero-slide" src="banner-events.png" />
+           <div class="hero-slide-arrow prev" id="heroPrev" aria-label="Previous slide">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+           </div>
+           <div class="hero-slide-arrow next" id="heroNext" aria-label="Next slide">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+           </div>
+           <div class="hero-slide-dots" id="heroDots"></div>
          </div>
           <div class="hero-status-line" id="heroStatus">September 21–25, 2026</div>
         </div>
@@ -1305,14 +1364,73 @@ document.querySelectorAll('[data-goto]').forEach(el=>{
 function initHeroSlideshow(){
   const slideshow = document.getElementById('heroSlideshow');
   if(!slideshow) return;
-  const slides = slideshow.querySelectorAll('.hero-slide');
+  const slides = Array.from(slideshow.querySelectorAll('.hero-slide'));
   if(slides.length < 2) return;
+
+  const dotsWrap = document.getElementById('heroDots');
+  const prevBtn = document.getElementById('heroPrev');
+  const nextBtn = document.getElementById('heroNext');
   let current = 0;
-  setInterval(()=>{
+  let timer = null;
+  const AUTOPLAY_MS = 5000;
+
+  dotsWrap.innerHTML = slides.map((_,i)=>`<div class="hero-slide-dot ${i===0?'active':''}" data-idx="${i}"></div>`).join('');
+  const dots = Array.from(dotsWrap.querySelectorAll('.hero-slide-dot'));
+
+  function show(idx){
     slides[current].classList.remove('active');
-    current = (current + 1) % slides.length;
+    dots[current].classList.remove('active');
+    current = (idx + slides.length) % slides.length;
     slides[current].classList.add('active');
-  }, 5000);
+    dots[current].classList.add('active');
+  }
+  function next(){ show(current + 1); }
+  function prev(){ show(current - 1); }
+  function restartAutoplay(){
+    if(timer) clearInterval(timer);
+    timer = setInterval(next, AUTOPLAY_MS);
+  }
+
+  prevBtn.addEventListener('click', ()=>{ prev(); restartAutoplay(); });
+  nextBtn.addEventListener('click', ()=>{ next(); restartAutoplay(); });
+  dots.forEach(dot=>{
+    dot.addEventListener('click', ()=>{ show(parseInt(dot.dataset.idx,10)); restartAutoplay(); });
+  });
+
+  /* swipe support (touch + mouse drag) */
+  let startX = 0, isDragging = false;
+  const SWIPE_THRESHOLD = 40;
+
+  slideshow.addEventListener('touchstart', e=>{
+    startX = e.touches[0].clientX;
+    isDragging = true;
+  }, {passive:true});
+  slideshow.addEventListener('touchend', e=>{
+    if(!isDragging) return;
+    isDragging = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    if(Math.abs(dx) > SWIPE_THRESHOLD){
+      dx < 0 ? next() : prev();
+      restartAutoplay();
+    }
+  });
+
+  slideshow.addEventListener('mousedown', e=>{
+    startX = e.clientX;
+    isDragging = true;
+  });
+  slideshow.addEventListener('mouseup', e=>{
+    if(!isDragging) return;
+    isDragging = false;
+    const dx = e.clientX - startX;
+    if(Math.abs(dx) > SWIPE_THRESHOLD){
+      dx < 0 ? next() : prev();
+      restartAutoplay();
+    }
+  });
+  slideshow.addEventListener('mouseleave', ()=>{ isDragging = false; });
+
+  restartAutoplay();
 }
 
 /* ============ INIT ============ */
