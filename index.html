@@ -49,7 +49,7 @@
     --header-bg:#139042;
     --gold-hi:#a9790c;
   }
-  :root[data-theme="light"] .navlink:hover{ background:rgba(0,0,0,.045); }
+  :root[data-theme="light"] .navlink:hover{ background:rgba(255,255,255,.12); }
   :root[data-theme="light"] tbody tr:hover{ background:rgba(0,0,0,.03); }
   /* Theme defaults to the light (white) palette above via data-theme="light"
      on <html>. The header (.topbar and .mobile-brand) is intentionally kept
@@ -91,8 +91,9 @@
   /* ---- Sidebar ---- */
   .sidebar{
     width:236px; flex-shrink:0;
-    background:linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%);
-    border-right:1px solid var(--line-soft);
+    background:var(--header-bg);
+    color:#ffffff;
+    border-right:1px solid rgba(0,0,0,.18);
     display:flex; flex-direction:column;
     position:sticky; top:0; height:100vh;
     z-index:50;
@@ -100,35 +101,35 @@
   .brand{
     display:flex; align-items:center; gap:10px;
     padding:22px 20px 18px;
-    border-bottom:1px solid var(--line-soft);
+    border-bottom:1px solid rgba(255,255,255,.18);
   }
   .brand .crest{
     width:38px; height:38px; flex-shrink:0;
     object-fit:contain;
   }
   .brand-text{ line-height:1.05; }
-  .brand-text .l1{ font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:1.5px; color:var(--gold-hi); }
-  .brand-text .l2{ font-size:10px; color:var(--bone-dim); letter-spacing:1px; }
+  .brand-text .l1{ font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:1.5px; color:#ffffff; }
+  .brand-text .l2{ font-size:10px; color:rgba(255,255,255,.85); letter-spacing:1px; }
 
   nav.mainnav{ padding:16px 12px; display:flex; flex-direction:column; gap:2px; flex:1; }
   .navlink{
     display:flex; align-items:center; gap:12px;
     padding:11px 14px; border-radius:6px;
-    color:var(--bone-dim); font-size:14.5px; font-weight:600;
+    color:rgba(255,255,255,.85); font-size:14.5px; font-weight:600;
     border-left:3px solid transparent;
     transition:background .15s ease, color .15s ease;
     cursor:pointer;
   }
-  .navlink svg{ width:18px; height:18px; flex-shrink:0; opacity:.85; }
-  .navlink:hover{ background:rgba(255,255,255,.04); color:var(--bone); }
+  .navlink svg{ width:18px; height:18px; flex-shrink:0; opacity:.9; }
+  .navlink:hover{ background:rgba(255,255,255,.12); color:#ffffff; }
   .navlink.active{
-    background:linear-gradient(90deg, rgba(184,41,31,.18), rgba(184,41,31,0));
-    color:var(--gold-hi);
-    border-left-color:var(--ember);
+    background:linear-gradient(90deg, rgba(255,255,255,.22), rgba(255,255,255,.04));
+    color:#ffffff;
+    border-left-color:#f0c766;
   }
   .sidebar-foot{
-    padding:16px 20px; border-top:1px solid var(--line-soft);
-    font-size:10.5px; color:var(--bone-dim); letter-spacing:.4px;
+    padding:16px 20px; border-top:1px solid rgba(255,255,255,.18);
+    font-size:10.5px; color:rgba(255,255,255,.8); letter-spacing:.4px;
   }
 
   /* mobile bottom nav */
@@ -143,10 +144,10 @@
   .topbar{
     display:flex; align-items:center; justify-content:space-between;
     padding:16px 28px; border-bottom:1px solid var(--line-soft);
-    background:#141416; color:#ece7da;
+    background:#ffffff; color:#221f1a;
   }
-  .topbar h2{ font-size:20px; color:#ece7da; }
-  .topbar .meta{ font-size:12px; color:#a6a29a; margin-top:2px; font-family:'Inter',sans-serif; }
+  .topbar h2{ font-size:20px; color:#221f1a; }
+  .topbar .meta{ font-size:12px; color:#6b6459; margin-top:2px; font-family:'Inter',sans-serif; }
   .live-pill{
     display:inline-flex; align-items:center; gap:6px;
     background:rgba(184,41,31,.15); border:1px solid rgba(184,41,31,.5);
