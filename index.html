@@ -149,7 +149,8 @@
   .live-dot{ width:7px; height:7px; border-radius:50%; background:#ff4433; animation:pulse 1.4s infinite; }
   @keyframes pulse{ 0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(255,68,51,.5);} 50%{opacity:.55; box-shadow:0 0 0 6px rgba(255,68,51,0);} }
 
-  .content{ padding:26px 28px 60px; max-width:1400px; }
+  .content{ padding:26px 28px 60px; max-width:1400px; --pad-x:28px; box-sizing:border-box; }
+  img{ max-width:100%; height:auto; }
 
   /* ---- Hero (Home) ---- */
   .hero{
@@ -173,16 +174,30 @@
     padding:0;
     border-radius:0;
     border-left:none; border-right:none;
-    width:calc(100% + 56px);
-    margin-left:-28px; margin-right:-28px;
+    width:calc(100% + (2 * var(--pad-x, 28px)));
+    margin-left:calc(-1 * var(--pad-x, 28px));
+    margin-right:calc(-1 * var(--pad-x, 28px));
+    max-width:none;
+    box-sizing:border-box;
   }
   .hero.hero-banner::before{ display:none; }
   .hero-slideshow{
     position:relative; width:100%;
-    aspect-ratio:1958/803;
     overflow:hidden;
     touch-action:pan-y;
     user-select:none;
+  }
+  /* Padding-top box technique: guarantees the banner always reserves its
+     height before images finish loading and on any browser, old or new,
+     so nothing below it can ever be overlapped mid-render. */
+  .hero-slideshow::before{
+    content:"";
+    display:block;
+    width:100%;
+    padding-top:41.01%; /* 803 / 1958 */
+  }
+  @supports (aspect-ratio: 1958 / 803){
+    .hero-slideshow::before{ padding-top:0; aspect-ratio:1958/803; }
   }
   .hero-banner-img{ display:block; width:100%; height:auto; }
   .hero-slideshow .hero-slide{
@@ -227,13 +242,14 @@
   .hero-slide-dot.active{ background:var(--gold-hi); transform:scale(1.2); }
 
   @media (max-width:760px){
-    .hero.hero-banner{
-      width:calc(100% + 28px);
-      margin-left:-14px; margin-right:-14px;
-    }
-    .hero-slideshow{ aspect-ratio:1958/1100; }
+    .hero-slideshow::before{ padding-top:56.18%; } /* 1100 / 1958, taller crop on phones */
     .hero-slide-arrow{ width:32px; height:32px; }
     .hero-slide-arrow svg{ width:15px; height:15px; }
+  }
+  @supports (aspect-ratio: 1958 / 1100){
+    @media (max-width:760px){
+      .hero-slideshow::before{ padding-top:0; aspect-ratio:1958/1100; }
+    }
   }
   .hero-status-line{
     padding:10px 18px; border-top:1px solid var(--line-soft);
@@ -441,7 +457,7 @@
 
   /* ---- corner flame accent (decorative, css only) ---- */
   .corner-accent{
-    position:fixed; left:0; bottom:0; width:220px; height:260px; z-index:0; pointer-events:none;
+    position:fixed; left:0; bottom:0; width:220px; height:260px; z-index:-1; pointer-events:none;
     opacity:.5;
     background:
       linear-gradient(70deg, rgba(184,41,31,.35) 0 8%, transparent 8.5%),
@@ -468,7 +484,7 @@
     .mobile-brand-text{ line-height:1.25; }
     .mobile-brand-text .l1{ font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:1px; color:white; }
     .mobile-brand-text .l2{ font-size:11.5px; color:white; letter-spacing:.5px; font-weight:700; margin-top:1px; }
-    .content{ padding:16px 14px 90px; }
+    .content{ padding:16px 14px 90px; --pad-x:14px; }
     .topbar{ padding:14px 16px; flex-wrap:wrap; gap:8px; }
     .hero{ padding:22px 18px; }
     .stats{ grid-template-columns:1fr 1fr; gap:10px; }
@@ -497,6 +513,15 @@
     .official-chip{ font-size:11px; padding:6px 10px; }
     .members-grid{ grid-template-columns:1fr 1fr; padding:12px; }
     .member-item{ font-size:11.5px; white-space:normal; }
+  }
+  @media (max-width:360px){
+    .content{ padding:14px 10px 90px; --pad-x:10px; }
+    .stats{ grid-template-columns:1fr; }
+    .hero{ padding:18px 14px; }
+    .hero-status-line{ padding:10px 14px; font-size:11.5px; }
+    .topbar{ padding:12px 10px; }
+    .topbar h2{ font-size:17px; }
+    .sched-body{ min-width:0; }
   }
 </style>
 </head>
