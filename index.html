@@ -29,6 +29,9 @@
     --jade:#3f9a63;
     --shadow: rgba(0,0,0,.5);
     --grain-op: .05;
+    --nav-bg-1:#081611;
+    --nav-bg-2:#0e2419;
+    --header-bg:#139042;
   }
   :root[data-theme="light"]{
     --ink:#f3efe6;
@@ -41,6 +44,9 @@
     --bone-dim:#6b6459;
     --shadow: rgba(60,40,10,.12);
     --grain-op: .03;
+    --nav-bg-1:#0e2b1e;
+    --nav-bg-2:#153c29;
+    --header-bg:#139042;
   }
   /* Theme is intentionally fixed to the dark palette above on every device,
      so the site looks the same regardless of the phone/browser's system
@@ -83,7 +89,7 @@
   /* ---- Sidebar ---- */
   .sidebar{
     width:236px; flex-shrink:0;
-    background:linear-gradient(180deg,#0c0c0d 0%, #111112 100%);
+    background:linear-gradient(180deg, var(--nav-bg-1) 0%, var(--nav-bg-2) 100%);
     border-right:1px solid var(--line-soft);
     display:flex; flex-direction:column;
     position:sticky; top:0; height:100vh;
@@ -478,7 +484,7 @@
       display:flex; align-items:center; gap:12px;
       padding:14px 16px 12px;
       border-bottom:1px solid var(--line-soft);
-      background:var(--ink-2);
+      background:var(--header-bg);
     }
     .mobile-brand .crest{ width:38px; height:40px; flex-shrink:0; object-fit:contain; }
     .mobile-brand-text{ line-height:1.25; }
@@ -499,7 +505,7 @@
     .status-tag{ margin-left:auto; }
     .bottomnav{
       display:flex; position:fixed; bottom:0; left:0; right:0; z-index:60;
-      background:#0c0c0d; border-top:1px solid var(--line-soft);
+      background:var(--nav-bg-1); border-top:1px solid var(--line-soft);
       justify-content:space-around; padding:8px 4px 10px;
     }
     .bn-link{ display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10px; color:var(--bone-dim); font-weight:700; }
