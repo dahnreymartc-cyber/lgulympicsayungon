@@ -250,14 +250,20 @@
   }
   .hero-slide-dot.active{ background:var(--gold-hi); transform:scale(1.2); }
 
+  /* Phones: show the WHOLE banner (1983x793) — no cropping, and nothing
+     drawn on top of the artwork. Arrows are hidden (swipe still works) and
+     the dots sit in their own strip under the image instead of over it. */
   @media (max-width:760px){
-    .hero-slideshow::before{ padding-top:56.18%; } /* 1100 / 1958, taller crop on phones */
-    .hero-slide-arrow{ width:32px; height:32px; }
-    .hero-slide-arrow svg{ width:15px; height:15px; }
+    .hero-slideshow{ padding-bottom:22px; background:#0b0b0c; }
+    .hero-slideshow::before{ padding-top:39.99%; } /* 793 / 1983 */
+    .hero-slideshow .hero-slide{ bottom:22px; height:calc(100% - 22px); object-fit:contain; }
+    .hero-slide-arrow{ display:none; }
+    .hero-slide-dots{ bottom:7px; }
+    .hero-slide-dot{ width:7px; height:7px; }
   }
-  @supports (aspect-ratio: 1958 / 1100){
+  @supports (aspect-ratio: 1983 / 793){
     @media (max-width:760px){
-      .hero-slideshow::before{ padding-top:0; aspect-ratio:1958/1100; }
+      .hero-slideshow::before{ padding-top:0; aspect-ratio:1983/793; }
     }
   }
   .hero-status-line{
