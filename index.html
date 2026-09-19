@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <title>LGUlympICS Ayungon 2026</title>
@@ -44,14 +44,16 @@
     --bone-dim:#6b6459;
     --shadow: rgba(60,40,10,.12);
     --grain-op: .03;
-    --nav-bg-1:#0e2b1e;
-    --nav-bg-2:#153c29;
+    --nav-bg-1:#ffffff;
+    --nav-bg-2:#f7f7f5;
     --header-bg:#139042;
+    --gold-hi:#a9790c;
   }
-  /* Theme is intentionally fixed to the dark palette above on every device,
-     so the site looks the same regardless of the phone/browser's system
-     color-scheme setting. (A manual toggle can still force light mode by
-     setting data-theme="light" on <html>, handled by the rule above.) */
+  :root[data-theme="light"] .navlink:hover{ background:rgba(0,0,0,.045); }
+  :root[data-theme="light"] tbody tr:hover{ background:rgba(0,0,0,.03); }
+  /* Theme defaults to the light (white) palette above via data-theme="light"
+     on <html>. The header (.topbar and .mobile-brand) is intentionally kept
+     on fixed, non-themed colors so it doesn't change when the theme does. */
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -141,10 +143,10 @@
   .topbar{
     display:flex; align-items:center; justify-content:space-between;
     padding:16px 28px; border-bottom:1px solid var(--line-soft);
-    background:var(--ink-2);
+    background:#141416; color:#ece7da;
   }
-  .topbar h2{ font-size:20px; }
-  .topbar .meta{ font-size:12px; color:var(--bone-dim); margin-top:2px; font-family:'Inter',sans-serif; }
+  .topbar h2{ font-size:20px; color:#ece7da; }
+  .topbar .meta{ font-size:12px; color:#a6a29a; margin-top:2px; font-family:'Inter',sans-serif; }
   .live-pill{
     display:inline-flex; align-items:center; gap:6px;
     background:rgba(184,41,31,.15); border:1px solid rgba(184,41,31,.5);
